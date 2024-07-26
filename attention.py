@@ -99,7 +99,6 @@ class CrossAttention(nn.Module):
         self.to_q = nn.Linear(config.n_embd, q_dim, bias=config.bias)
         self.to_k = nn.Linear(config.n_embd, k_dim, bias=config.bias)
         self.to_v = nn.Linear(config.n_embd, v_dim, bias=config.bias)
-        self.out = nn.Linear(config.n_embd, v_dim, bias=config.bias)
         # output projection
         self.c_proj = nn.Linear(out_dim, config.n_embd, bias=config.bias)
         # regularization
@@ -128,6 +127,8 @@ class CrossAttention(nn.Module):
         # We arrange the heads -> batch_size, n head (or kv head), block size, dim_head
         
         q, k = map(l2norm, (q, k))
+        q = q * self.qk_norm_q_scale
+        k = k * self.qk_norm_k_scale
         # We apply qk normalization on the dot products
         
         freqs, xpos_scale = rotary_pos_emb # block_size, dim_head/2
