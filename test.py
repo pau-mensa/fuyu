@@ -62,10 +62,9 @@ def test_forward_pass_with_targets(model):
 def test_generation(model, generated_sequence=30, temperature=1, top_k=200):
     text, img, _ = random_data()
     # Apply model to text and img
-    model.eval()
+    
     sample = model.generate(text, img, generated_sequence, temperature=temperature, top_k=top_k)
     print(sample.size())
-    model.train()
     
 
 if __name__ == '__main__':
@@ -112,6 +111,7 @@ if __name__ == '__main__':
     model.to(device)
     print("Initialization Done!")
     print("-----")
+    model.eval()
     
     test_all = not args.forward_targets_pass and not args.forward_pass and not args.generation
     
